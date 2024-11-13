@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Deno Websocket Example</title>
+  </head>
+  <body>
+    <h1>Deno Websocket Example</h1>
+    <button id="connect">Connect to Web Socket</button>
+    <p id="status">Not connected.</p>
+    <button id="sendHey" disabled>Greet</button>
+    <p id="messages"></p>
+  </body>
+  <script>
+    let socket;
+    document.getElementById("connect").addEventListener("click", () => {
+      socket = new WebSocket("ws://localhost:8000");
+      socket.addEventListener("open", () => {
+        document.getElementById("status").textContent = "Connected";
+        document.getElementById("sendHey").disabled = false;
+      });
+      socket.addEventListener("message", (event) => {
+        document.getElementById(
+          "messages"
+        ).textContent = `Server message: ${event.data}`;
+      });
+      document.getElementById("sendHey").addEventListener("click", () => {
+        socket.send("hey");
+      });
+      socket.addEventListener("close", () => {
+        document.getElementById("status").textContent = "Not Connected";
+        document.getElementById("sendHey").disabled = true;
+      });
+    });
+  </script>
+</html>
